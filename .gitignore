@@ -1,0 +1,23 @@
+# dependencies
+/node_modules
+
+# Next.js
+/.next
+/out
+
+# test and build output
+/coverage
+*.tsbuildinfo
+
+# local data and secrets
+/.data
+/.env
+/.env.local
+/.env.*.local
+
+# editor and operating system
+.DS_Store
+Thumbs.db
+
+# logs
+*.log

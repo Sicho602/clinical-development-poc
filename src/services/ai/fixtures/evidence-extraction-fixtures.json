@@ -1,0 +1,173 @@
+{
+  "39512347": {
+    "provider": "mock",
+    "model": "fixture-v1",
+    "isMock": true,
+    "fields": [
+      {
+        "field": "population",
+        "value": "Patients with advanced gastric or gastroesophageal junction cancer treated with PD-1/PD-L1 inhibitors",
+        "sourceText": "This multicenter retrospective study analyzed 617 patients with advanced gastric or gastroesophageal junction cancer treated with programmed cell death protein-1 (PD-1)/PD-L1 inhibitors from January 2019 to March 2023."
+      },
+      {
+        "field": "sample_size",
+        "value": 617,
+        "unit": "patients",
+        "sourceText": "This multicenter retrospective study analyzed 617 patients with advanced gastric or gastroesophageal junction cancer treated with programmed cell death protein-1 (PD-1)/PD-L1 inhibitors from January 2019 to March 2023."
+      },
+      {
+        "field": "treatment",
+        "value": "PD-1/PD-L1 inhibitors",
+        "sourceText": "This multicenter retrospective study analyzed 617 patients with advanced gastric or gastroesophageal junction cancer treated with programmed cell death protein-1 (PD-1)/PD-L1 inhibitors from January 2019 to March 2023."
+      },
+      {
+        "field": "study_design",
+        "value": "Multicenter retrospective study",
+        "sourceText": "This multicenter retrospective study analyzed 617 patients with advanced gastric or gastroesophageal junction cancer treated with programmed cell death protein-1 (PD-1)/PD-L1 inhibitors from January 2019 to March 2023."
+      },
+      {
+        "field": "primary_endpoint",
+        "value": ["Overall survival (OS)", "Progression-free survival (PFS)"],
+        "sourceText": "The primary endpoints were overall survival (OS) and progression-free survival (PFS); the secondary endpoints included the objective response rate (ORR) and disease control rate (DCR)."
+      },
+      {
+        "field": "secondary_endpoints",
+        "value": ["Objective response rate (ORR)", "Disease control rate (DCR)"],
+        "sourceText": "The primary endpoints were overall survival (OS) and progression-free survival (PFS); the secondary endpoints included the objective response rate (ORR) and disease control rate (DCR)."
+      }
+    ]
+  },
+  "37545502": {
+    "provider": "mock",
+    "model": "fixture-v1",
+    "isMock": true,
+    "fields": [
+      {
+        "field": "population",
+        "value": "Patients with gastrointestinal cancer treated with immune checkpoint inhibitors",
+        "sourceText": "Our study represents the first meta-analysis conducted to evaluate the prognostic utility of the baseline prognostic nutritional index (PNI) in patients with gastrointestinal cancer (GIC) who received immune checkpoint inhibitor (ICI) therapy."
+      },
+      {
+        "field": "treatment",
+        "value": "Immune checkpoint inhibitor therapy",
+        "sourceText": "Our study represents the first meta-analysis conducted to evaluate the prognostic utility of the baseline prognostic nutritional index (PNI) in patients with gastrointestinal cancer (GIC) who received immune checkpoint inhibitor (ICI) therapy."
+      },
+      {
+        "field": "sample_size",
+        "value": 2883,
+        "unit": "patients",
+        "sourceText": "In this analysis, a total of 17 articles with 2883 patients were included."
+      },
+      {
+        "field": "study_design",
+        "value": "Meta-analysis",
+        "sourceText": "Our study represents the first meta-analysis conducted to evaluate the prognostic utility of the baseline prognostic nutritional index (PNI) in patients with gastrointestinal cancer (GIC) who received immune checkpoint inhibitor (ICI) therapy."
+      },
+      {
+        "field": "hazard_ratio",
+        "value": ["OS: 0.530", "PFS: 0.740"],
+        "sourceText": "Our pooled results indicated that patients with high PNI levels had longer OS (HR: 0.530, 95% CI: 0.456-0.616,< 0.001) and PFS (HR: 0.740, 95% CI: 0.649-0.844,< 0.001), as well as higher ORR (OR: 1.622, 95% CI: 1.251-2.103,< 0.004) and DCR (OR: 1.846, 95% CI: 1.428-2.388,< 0.001)."
+      },
+      {
+        "field": "confidence_interval",
+        "value": ["OS: 0.456-0.616", "PFS: 0.649-0.844"],
+        "unit": "95% CI",
+        "sourceText": "Our pooled results indicated that patients with high PNI levels had longer OS (HR: 0.530, 95% CI: 0.456-0.616,< 0.001) and PFS (HR: 0.740, 95% CI: 0.649-0.844,< 0.001), as well as higher ORR (OR: 1.622, 95% CI: 1.251-2.103,< 0.004) and DCR (OR: 1.846, 95% CI: 1.428-2.388,< 0.001)."
+      }
+    ]
+  },
+  "36612071": {
+    "provider": "mock",
+    "model": "fixture-v1",
+    "isMock": true,
+    "fields": [
+      {
+        "field": "population",
+        "value": "Operated gastric cancer cases",
+        "sourceText": "We included 137 cases of operated GC, 51 of which were submitted to POPChT."
+      },
+      {
+        "field": "sample_size",
+        "value": 137,
+        "unit": "cases",
+        "sourceText": "We included 137 cases of operated GC, 51 of which were submitted to POPChT."
+      },
+      {
+        "field": "treatment",
+        "value": "Perioperative chemotherapy (POPChT)",
+        "sourceText": "We investigated the impactof microsatellite instability (MSI) and Epstein-Barr virus (EBV) status in gastric cancer (GC), regarding response to perioperative chemotherapy (POPChT), overall survival (OS), and progression-free survival (PFS)."
+      },
+      {
+        "field": "os",
+        "value": "No significant differences between molecular subtypes",
+        "sourceText": "No significant differences were found in OS or PFS between different subtypes."
+      },
+      {
+        "field": "pfs",
+        "value": "No significant differences between molecular subtypes",
+        "sourceText": "No significant differences were found in OS or PFS between different subtypes."
+      }
+    ]
+  },
+  "39050856": {
+    "provider": "mock",
+    "model": "fixture-v1",
+    "isMock": true,
+    "fields": [
+      {
+        "field": "population",
+        "value": "Gastric cancer patients treated with immune checkpoint inhibitors",
+        "sourceText": "The predictive value of NLR, PLR, LMR in patients with gastric cancer (GC) treated with ICIs has not been fully explored; therefore, we conducted a meta-analysis to examine the potential of inflammatory markers NLR, PLR, and LMR as survival predictors in this population."
+      },
+      {
+        "field": "treatment",
+        "value": "Immune checkpoint inhibitors",
+        "sourceText": "The predictive value of NLR, PLR, LMR in patients with gastric cancer (GC) treated with ICIs has not been fully explored; therefore, we conducted a meta-analysis to examine the potential of inflammatory markers NLR, PLR, and LMR as survival predictors in this population."
+      },
+      {
+        "field": "sample_size",
+        "value": 1336,
+        "unit": "patients",
+        "sourceText": "Fifteen cohort studies involving 1336 gastric cancer patients were finally included in this meta-analysis."
+      },
+      {
+        "field": "study_design",
+        "value": "Meta-analysis of 15 cohort studies",
+        "sourceText": "Fifteen cohort studies involving 1336 gastric cancer patients were finally included in this meta-analysis."
+      },
+      {
+        "field": "hazard_ratio",
+        "value": ["NLR OS: 2.01", "NLR PFS: 1.59", "PLR OS: 1.57", "PLR PFS: 1.52", "LMR OS: 0.62", "LMR PFS: 0.69"],
+        "sourceText": "The results of the meta-analysis showed that high levels of NLR were associated with poorer OS and PFS in GC patients receiving ICIs, with combined HRs of OS [HR=2.01, 95%CI (1.72,2.34), P<0.01], and PFS PFS[HR=1.59, 95%CI (1.37,1.86), P<0.01], respectively; high levels of PLR were associated with poorer OS and PFS, and the combined HR was OS [HR=1.57, 95%CI (1.25,1.96), P<0.01], PFS [HR=1.52,95%CI (1.20, 1.94), P<0.01], respectively; and there was an association between elevated LMR and prolonged OS and PFS, and the combined HR was OS [HR=0.62, 95%CI (0.47,0.81), P<0.01], and PFS [HR=0.69, 95%CI (0.50,0.95), P<0.01]."
+      }
+    ]
+  },
+  "41499132": {
+    "provider": "mock",
+    "model": "fixture-v1",
+    "isMock": true,
+    "fields": [
+      {
+        "field": "population",
+        "value": "Patients with gastric cancer",
+        "sourceText": "Gastric cancer is more common in men, and the median age at diagnosis is 68 years."
+      },
+      {
+        "field": "treatment",
+        "value": ["Surgical resection", "Perioperative chemotherapy", "Durvalumab"],
+        "sourceText": "Patients with more advanced-stage disease should receive gastrectomy, perioperative chemotherapy with 5-fluorouracil, oxaliplatin, and docetaxel and immunotherapy (durvalumab)."
+      },
+      {
+        "field": "line_of_therapy",
+        "value": "Unresectable or metastatic disease",
+        "sourceText": "For patients with unresectable or metastatic gastric cancer, chemotherapy with immune checkpoint inhibitors and targeted therapies such as trastuzumab or zolbetuximab improves survival by several months."
+      },
+      {
+        "field": "os",
+        "value": "Additional 3 months of survival versus chemotherapy alone",
+        "unit": "months",
+        "sourceText": "For PD-L1-expressing gastric cancer, adding immune checkpoint inhibitors, such as nivolumab and pembrolizumab, is associated with an additional 3 months of survival when compared with chemotherapy alone."
+      }
+    ]
+  }
+}
