@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 
 import { ClinicalTrialsClient } from "@/services/connectors/clinical-trials/clinical-trials-client";
-import { isConnectorError } from "@/services/connectors/connector-error";
+import { connectorErrorResponse } from "@/services/connectors/http-error";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const maxDuration = 60;
 
 const clinicalTrials = new ClinicalTrialsClient();
 
@@ -22,7 +25,7 @@ export async function GET(
           status: "failed",
           error: {
             code: "not_found",
-            message: "Clinical trial was not found.",
+            message: "해당 임상시험을 찾지 못했습니다.",
           },
         },
         { status: 404 },
@@ -34,30 +37,6 @@ export async function GET(
       data: trial,
     });
   } catch (error) {
-    if (isConnectorError(error)) {
-      return NextResponse.json(
-        {
-          status:
-            error.code === "rate_limited" ? "rate_limited" : "failed",
-          error: {
-            code: error.code,
-            message: error.message,
-            retryAfterSeconds: error.retryAfterSeconds,
-          },
-        },
-        { status: error.status },
-      );
-    }
-
-    return NextResponse.json(
-      {
-        status: "failed",
-        error: {
-          code: "internal_error",
-          message: "An unexpected server error occurred.",
-        },
-      },
-      { status: 500 },
-    );
+    return connectorErrorResponse(error);
   }
 }

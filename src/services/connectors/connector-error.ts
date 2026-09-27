@@ -21,5 +21,61 @@ export class ConnectorError extends Error {
 }
 
 export function isConnectorError(error: unknown): error is ConnectorError {
-  return error instanceof ConnectorError;
+  if (error instanceof ConnectorError) {
+    return true;
+  }
+
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const candidate = error as {
+    name?: unknown;
+    code?: unknown;
+    status?: unknown;
+    message?: unknown;
+  };
+
+  return (
+    candidate.name === "ConnectorError" &&
+    typeof candidate.code === "string" &&
+    typeof candidate.status === "number" &&
+    typeof candidate.message === "string"
+  );
+}
+
+export function asConnectorError(error: unknown): ConnectorError | null {
+  if (error instanceof ConnectorError) {
+    return error;
+  }
+
+  if (!error || typeof error !== "object") {
+    return null;
+  }
+
+  const candidate = error as {
+    name?: unknown;
+    code?: unknown;
+    message?: unknown;
+    status?: unknown;
+    retryAfterSeconds?: unknown;
+  };
+
+  if (
+    candidate.name !== "ConnectorError" ||
+    typeof candidate.code !== "string" ||
+    typeof candidate.message !== "string" ||
+    typeof candidate.status !== "number"
+  ) {
+    return null;
+  }
+
+  return new ConnectorError(
+    candidate.code as ConnectorErrorCode,
+    candidate.message,
+    candidate.status,
+    typeof candidate.retryAfterSeconds === "number"
+      ? candidate.retryAfterSeconds
+      : undefined,
+  );
 }

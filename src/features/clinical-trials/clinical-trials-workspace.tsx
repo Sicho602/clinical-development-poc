@@ -50,6 +50,7 @@ interface SearchResponse {
   error?: {
     code: string;
     message: string;
+    status?: number;
     retryAfterSeconds?: number;
   };
 }
@@ -250,16 +251,19 @@ export function ClinicalTrialsWorkspace({
     isLoadMore = false,
   ): Promise<SearchResponse | null> {
     try {
-      const response = await fetch(buildSearchUrl(searchStrategy, pageToken));
-      const payload = (await response.json()) as SearchResponse;
+      const response = await fetch(buildSearchUrl(searchStrategy, pageToken), {
+        cache: "no-store",
+      });
+      const payload = await readJsonResponse<SearchResponse>(response);
 
-      if (!response.ok || !payload.data) {
-        const message = payload.error?.message ?? "검색 요청에 실패했습니다.";
-        setError(message);
+      if (!response.ok || !payload?.data) {
+        const message =
+          payload?.error?.message ?? "검색 요청에 실패했습니다.";
+        setError(`${message} (HTTP ${response.status})`);
         if (isLoadMore) {
-          setLoadMoreStatus(payload.status ?? "failed");
+          setLoadMoreStatus(payload?.status ?? "failed");
         } else {
-          setStatus(payload.status ?? "failed");
+          setStatus(payload?.status ?? "failed");
         }
         return null;
       }
@@ -302,9 +306,11 @@ export function ClinicalTrialsWorkspace({
     setSelectedDetail(null);
     setDetailStatus("loading");
     try {
-      const response = await fetch(`/api/clinical-trials/${trial.nctId}`);
-      const payload = (await response.json()) as DetailResponse;
-      if (!response.ok || !payload.data) {
+      const response = await fetch(`/api/clinical-trials/${trial.nctId}`, {
+        cache: "no-store",
+      });
+      const payload = await readJsonResponse<DetailResponse>(response);
+      if (!response.ok || !payload?.data) {
         setDetailStatus("failed");
         return;
       }
@@ -1384,6 +1390,14 @@ function EmptyState({ text }: { text: string }) {
       {text}
     </div>
   );
+}
+
+async function readJsonResponse<T>(response: Response): Promise<T | null> {
+  try {
+    return (await response.json()) as T;
+  } catch {
+    return null;
+  }
 }
 
 function buildSearchUrl(

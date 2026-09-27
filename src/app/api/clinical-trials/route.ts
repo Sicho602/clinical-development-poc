@@ -6,14 +6,15 @@ import type {
   ClinicalTrialSummary,
   ClinicalTrialsServerSearchStrategy,
 } from "@/domain/models";
-import {
-  ConnectorError,
-  isConnectorError,
-} from "@/services/connectors/connector-error";
+import { ConnectorError } from "@/services/connectors/connector-error";
+import { connectorErrorResponse } from "@/services/connectors/http-error";
 import { ClinicalTrialsClient } from "@/services/connectors/clinical-trials/clinical-trials-client";
 import { buildClinicalTrialsApiParameters } from "@/services/connectors/clinical-trials/clinical-trials-search-strategy";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const maxDuration = 60;
 
 const clinicalTrials = new ClinicalTrialsClient();
 
@@ -156,7 +157,7 @@ function parseSearchStrategy(
   } catch (error) {
     throw new ConnectorError(
       "invalid_request",
-      "One or more ClinicalTrials.gov search criteria are invalid.",
+      "ClinicalTrials.gov 검색 조건이 올바르지 않습니다.",
       400,
       undefined,
       { cause: error },
@@ -188,29 +189,5 @@ function readCsv<T extends z.ZodType<string>>(
 }
 
 function errorResponse(error: unknown) {
-  if (isConnectorError(error)) {
-    return NextResponse.json(
-      {
-        status:
-          error.code === "rate_limited" ? "rate_limited" : "failed",
-        error: {
-          code: error.code,
-          message: error.message,
-          retryAfterSeconds: error.retryAfterSeconds,
-        },
-      },
-      { status: error.status },
-    );
-  }
-
-  return NextResponse.json(
-    {
-      status: "failed",
-      error: {
-        code: "internal_error",
-        message: "An unexpected server error occurred.",
-      },
-    },
-    { status: 500 },
-  );
+  return connectorErrorResponse(error);
 }

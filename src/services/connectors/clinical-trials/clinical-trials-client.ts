@@ -23,17 +23,23 @@ const searchResponseSchema = z.object({
 });
 
 const DEFAULT_BASE_URL = "https://clinicaltrials.gov/api/v2";
-const DEFAULT_TIMEOUT_MS = 15_000;
+const DEFAULT_TIMEOUT_MS = 25_000;
 const MAX_PAGE_SIZE = 100;
+const DEFAULT_USER_AGENT =
+  process.env.CLINICAL_TRIALS_USER_AGENT?.trim() ||
+  "clinical-development-explorer/0.1 (https://github.com/Sicho602/clinical-development-poc; research-poc)";
 
 export class ClinicalTrialsClient implements ClinicalTrialsConnector {
   private readonly baseUrl: string;
+  private readonly userAgent: string;
 
   constructor(
-    baseUrl = process.env.CLINICAL_TRIALS_API_BASE_URL ?? DEFAULT_BASE_URL,
+    baseUrl = process.env.CLINICAL_TRIALS_API_BASE_URL,
     private readonly timeoutMs = DEFAULT_TIMEOUT_MS,
+    userAgent = DEFAULT_USER_AGENT,
   ) {
-    this.baseUrl = baseUrl.replace(/\/$/, "");
+    this.baseUrl = resolveBaseUrl(baseUrl);
+    this.userAgent = userAgent;
   }
 
   async search(
@@ -42,7 +48,7 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
     if (!hasServerSearchCriteria(input.strategy)) {
       throw new ConnectorError(
         "invalid_request",
-        "At least one ClinicalTrials.gov search criterion is required.",
+        "ClinicalTrials.gov 검색 조건이 최소 1개 필요합니다.",
         400,
       );
     }
@@ -65,12 +71,12 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
     }
 
     const response = await this.request(url);
-    const payload = searchResponseSchema.safeParse(await response.json());
+    const payload = searchResponseSchema.safeParse(await readJsonBody(response));
 
     if (!payload.success) {
       throw new ConnectorError(
         "invalid_response",
-        "ClinicalTrials.gov search response could not be parsed.",
+        "ClinicalTrials.gov 검색 응답을 해석하지 못했습니다.",
         502,
         undefined,
         { cause: payload.error },
@@ -90,7 +96,7 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
     if (!/^NCT\d{8}$/.test(normalizedNctId)) {
       throw new ConnectorError(
         "invalid_request",
-        "A valid NCT identifier is required.",
+        "올바른 NCT 번호가 필요합니다.",
         400,
       );
     }
@@ -102,7 +108,7 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
 
     try {
       const response = await this.request(url);
-      return mapClinicalTrial(await response.json());
+      return mapClinicalTrial(await readJsonBody(response));
     } catch (error) {
       if (isConnectorError(error) && error.code === "not_found") {
         return null;
@@ -113,12 +119,15 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
 
   private async request(url: URL): Promise<Response> {
     try {
-      const response = await fetch(url, {
+      const response = await fetch(url.toString(), {
+        method: "GET",
         headers: {
           Accept: "application/json",
+          "User-Agent": this.userAgent,
         },
-        signal: AbortSignal.timeout(this.timeoutMs),
+        redirect: "follow",
         cache: "no-store",
+        signal: AbortSignal.timeout(this.timeoutMs),
       });
 
       if (response.ok) {
@@ -130,7 +139,7 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
       if (response.status === 404) {
         throw new ConnectorError(
           "not_found",
-          "ClinicalTrials.gov study was not found.",
+          "해당 임상시험을 찾지 못했습니다.",
           404,
         );
       }
@@ -138,7 +147,7 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
       if (response.status === 429) {
         throw new ConnectorError(
           "rate_limited",
-          "ClinicalTrials.gov request was rate limited.",
+          "ClinicalTrials.gov 요청이 제한되었습니다. 잠시 후 다시 시도하세요.",
           429,
           retryAfter,
         );
@@ -146,8 +155,8 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
 
       throw new ConnectorError(
         "upstream_error",
-        `ClinicalTrials.gov returned HTTP ${response.status}.`,
-        502,
+        `ClinicalTrials.gov가 HTTP ${response.status}를 반환했습니다.`,
+        response.status >= 400 && response.status < 500 ? response.status : 502,
         retryAfter,
       );
     } catch (error) {
@@ -155,10 +164,10 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
         throw error;
       }
 
-      if (error instanceof DOMException && error.name === "TimeoutError") {
+      if (isTimeoutError(error)) {
         throw new ConnectorError(
           "timeout",
-          "ClinicalTrials.gov request timed out.",
+          "ClinicalTrials.gov 응답 시간이 초과되었습니다.",
           504,
           undefined,
           { cause: error },
@@ -167,13 +176,41 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
 
       throw new ConnectorError(
         "network_error",
-        "ClinicalTrials.gov could not be reached.",
+        "ClinicalTrials.gov에 연결하지 못했습니다.",
         502,
         undefined,
         { cause: error },
       );
     }
   }
+}
+
+function resolveBaseUrl(value?: string) {
+  const trimmed = value?.trim();
+  return (trimmed || DEFAULT_BASE_URL).replace(/\/$/, "");
+}
+
+async function readJsonBody(response: Response): Promise<unknown> {
+  try {
+    return await response.json();
+  } catch (error) {
+    throw new ConnectorError(
+      "invalid_response",
+      "ClinicalTrials.gov가 JSON이 아닌 응답을 반환했습니다.",
+      502,
+      undefined,
+      { cause: error },
+    );
+  }
+}
+
+function isTimeoutError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const name = "name" in error ? String(error.name) : "";
+  return name === "TimeoutError" || name === "AbortError";
 }
 
 function parseRetryAfter(value: string | null): number | undefined {
