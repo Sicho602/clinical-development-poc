@@ -94,6 +94,13 @@ export function SidebarNavigation() {
           ),
         },
         {
+          label: navCopy.sampleSize,
+          href: `/assessments/${assessmentId}/sample-size`,
+          active: pathname.startsWith(
+            `/assessments/${assessmentId}/sample-size`,
+          ),
+        },
+        {
           label: navCopy.feasibility,
           href: `/assessments/${assessmentId}/feasibility`,
           active: pathname.startsWith(

@@ -10,6 +10,7 @@ import { LocalStorageExtractionValidationRepository } from "@/repositories/brows
 import { LocalStorageHistoricalBenchmarkRepository } from "@/repositories/browser/historical-benchmark-repository";
 import { LocalStoragePublicationSelectionRepository } from "@/repositories/browser/publication-selection-repository";
 import { LocalStorageReferenceTrialRepository } from "@/repositories/browser/reference-trial-repository";
+import { LocalStorageSampleSizeRepository } from "@/repositories/browser/sample-size-repository";
 import { LocalStorageSearchLogRepository } from "@/repositories/browser/search-log-repository";
 
 export const DEMO_ASSESSMENT_ID = "ASSESS-2026-001";
@@ -148,5 +149,6 @@ async function clearDemoLinkedData() {
     new LocalStorageExtractionValidationRepository().clear(DEMO_ASSESSMENT_ID),
     new LocalStorageHistoricalBenchmarkRepository().clear(DEMO_ASSESSMENT_ID),
     new LocalStorageDevelopmentStrategyRepository().clear(DEMO_ASSESSMENT_ID),
+    new LocalStorageSampleSizeRepository().clear(DEMO_ASSESSMENT_ID),
   ]);
 }

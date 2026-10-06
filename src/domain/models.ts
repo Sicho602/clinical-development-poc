@@ -822,3 +822,156 @@ export interface Review {
   comment?: string;
   reviewedAt?: ISODateTime;
 }
+
+export type SampleSizeAnalysisType =
+  | "superiority"
+  | "non_inferiority"
+  | "bioequivalence";
+
+export type SampleSizeOutcomeType = "continuous" | "binary" | "pk";
+export type SampleSizeTestSides = "one_sided" | "two_sided";
+export type SampleSizeBetterDirection = "higher" | "lower";
+export type SampleSizePkParameter = "AUC" | "Cmax";
+export type SampleSizeScenarioStatus = "draft" | "saved";
+export type SampleSizeMeanEntryMode = "means" | "difference";
+
+export interface SampleSizeArmCounts {
+  treatment: number;
+  control: number;
+  total: number;
+}
+
+export interface SampleSizeCrossoverCounts {
+  completers: number;
+  sequenceTR: number;
+  sequenceRT: number;
+  enrollment: number;
+  sequenceTREnrollment: number;
+  sequenceRTEnrollment: number;
+}
+
+export interface SampleSizeDiagnostics {
+  method: string;
+  formula: string;
+  hypothesis: string;
+  alpha: number;
+  sides: SampleSizeTestSides;
+  zAlpha: number;
+  zBeta: number;
+  tCritical?: number;
+  degreesOfFreedom?: number;
+  effect: number;
+  variance: number;
+  rawN: number;
+  roundingRule: string;
+  dropoutRate: number;
+  allocationRatio: string;
+  notes: string[];
+}
+
+export interface SampleSizeSuccess {
+  ok: true;
+  analysisType: SampleSizeAnalysisType;
+  outcomeType: SampleSizeOutcomeType;
+  analysisN: SampleSizeArmCounts | null;
+  enrollmentN: SampleSizeArmCounts | null;
+  crossover: SampleSizeCrossoverCounts | null;
+  achievedPower?: number;
+  diagnostics: SampleSizeDiagnostics;
+}
+
+export interface SampleSizeFailure {
+  ok: false;
+  code: string;
+  message: string;
+}
+
+export type SampleSizeResult = SampleSizeSuccess | SampleSizeFailure;
+
+export interface SampleSizeSuperiorityContinuousInput {
+  kind: "superiority_continuous";
+  sides: SampleSizeTestSides;
+  alpha: number;
+  power: number;
+  meanEntryMode: SampleSizeMeanEntryMode;
+  treatmentMean?: number;
+  controlMean?: number;
+  expectedDifference?: number;
+  sd: number;
+  allocationTreatment: number;
+  allocationControl: number;
+  dropoutRate: number;
+}
+
+export interface SampleSizeSuperiorityBinaryInput {
+  kind: "superiority_binary";
+  sides: SampleSizeTestSides;
+  alpha: number;
+  power: number;
+  treatmentRate: number;
+  controlRate: number;
+  allocationTreatment: number;
+  allocationControl: number;
+  dropoutRate: number;
+}
+
+export interface SampleSizeNonInferiorityContinuousInput {
+  kind: "non_inferiority_continuous";
+  alpha: number;
+  power: number;
+  treatmentMean: number;
+  controlMean: number;
+  margin: number;
+  sd: number;
+  direction: SampleSizeBetterDirection;
+  allocationTreatment: number;
+  allocationControl: number;
+  dropoutRate: number;
+}
+
+export interface SampleSizeNonInferiorityBinaryInput {
+  kind: "non_inferiority_binary";
+  alpha: number;
+  power: number;
+  treatmentRate: number;
+  controlRate: number;
+  margin: number;
+  direction: SampleSizeBetterDirection;
+  allocationTreatment: number;
+  allocationControl: number;
+  dropoutRate: number;
+}
+
+export interface SampleSizeBioequivalenceInput {
+  kind: "bioequivalence_2x2";
+  pkParameter: SampleSizePkParameter;
+  expectedGmr: number;
+  intraSubjectCv: number;
+  power: number;
+  alpha: number;
+  lowerLimit: number;
+  upperLimit: number;
+  dropoutRate: number;
+}
+
+export type SampleSizeInput =
+  | SampleSizeSuperiorityContinuousInput
+  | SampleSizeSuperiorityBinaryInput
+  | SampleSizeNonInferiorityContinuousInput
+  | SampleSizeNonInferiorityBinaryInput
+  | SampleSizeBioequivalenceInput;
+
+export interface SampleSizeScenario {
+  calculationId: EntityId;
+  assessmentId: EntityId;
+  name: string;
+  analysisType: SampleSizeAnalysisType;
+  outcomeType: SampleSizeOutcomeType;
+  inputs: SampleSizeInput;
+  results: SampleSizeSuccess | null;
+  selectedForStrategy: boolean;
+  isDemoInput: boolean;
+  status: SampleSizeScenarioStatus;
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+}

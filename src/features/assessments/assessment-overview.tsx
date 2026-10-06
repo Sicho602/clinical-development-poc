@@ -234,6 +234,11 @@ export function AssessmentOverview({
           label={navCopy.strategy}
         />
         <WorkspaceLink
+          description="통계적 가정을 입력하여 목표 검정력에 필요한 대상자 수를 산출합니다."
+          href={`/assessments/${assessment.id}/sample-size`}
+          label={navCopy.sampleSize}
+        />
+        <WorkspaceLink
           description="검토된 임상설계를 기준으로 예상 일정, 비용 및 수행 난이도를 검토합니다."
           href={`/assessments/${assessment.id}/feasibility`}
           label={navCopy.feasibility}

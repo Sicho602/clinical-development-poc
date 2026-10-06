@@ -10,6 +10,7 @@ import { LocalStorageEvidenceExtractionRepository } from "@/repositories/browser
 import { LocalStorageHistoricalBenchmarkRepository } from "@/repositories/browser/historical-benchmark-repository";
 import { LocalStoragePublicationSelectionRepository } from "@/repositories/browser/publication-selection-repository";
 import { LocalStorageReferenceTrialRepository } from "@/repositories/browser/reference-trial-repository";
+import { LocalStorageSampleSizeRepository } from "@/repositories/browser/sample-size-repository";
 import { LocalStorageSearchLogRepository } from "@/repositories/browser/search-log-repository";
 import { DemoNotice } from "@/components/layout/demo-notice";
 import { isDemoAssessment } from "@/lib/demo-assessment";
@@ -27,6 +28,7 @@ const searchLogRepository = new LocalStorageSearchLogRepository();
 const extractionRepository = new LocalStorageEvidenceExtractionRepository();
 const benchmarkRepository = new LocalStorageHistoricalBenchmarkRepository();
 const strategyRepository = new LocalStorageDevelopmentStrategyRepository();
+const sampleSizeRepository = new LocalStorageSampleSizeRepository();
 
 type StepState = "complete" | "current" | "upcoming";
 
@@ -50,6 +52,7 @@ export function WorkflowProgress({
       extractionRepository.list(assessmentId),
       benchmarkRepository.getByAssessmentId(assessmentId),
       strategyRepository.getByAssessmentId(assessmentId),
+      sampleSizeRepository.list(assessmentId),
     ]).then(
       ([
         assessment,
@@ -59,6 +62,7 @@ export function WorkflowProgress({
         extractions,
         benchmark,
         strategy,
+        sampleSizes,
       ]) => {
         const next = new Set<WorkflowStepId>();
         if (assessment) next.add("register");
@@ -82,6 +86,7 @@ export function WorkflowProgress({
         ) {
           next.add("strategy");
         }
+        if (sampleSizes.length) next.add("sample_size");
         setCompleted(next);
       },
     );
@@ -96,7 +101,7 @@ export function WorkflowProgress({
       aria-label="검토 진행단계"
       className="mb-5 overflow-x-auto border border-[var(--border)] bg-white"
     >
-      <ol className="flex min-w-[880px]">
+      <ol className="flex min-w-[1040px]">
         {workflowSteps.map((step, index) => {
           const state = stepState(step.id, currentStep, completed);
           return (

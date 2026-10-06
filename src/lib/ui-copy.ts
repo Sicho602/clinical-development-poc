@@ -19,6 +19,7 @@ export const navCopy = {
   matrix: "근거 비교표",
   benchmark: "기존 치료성과 기준",
   strategy: "임상개발 전략",
+  sampleSize: "표본수 산출",
   feasibility: "수행 가능성 검토",
   report: "종합 검토 결과",
 } as const;
@@ -44,6 +45,8 @@ export const pageGuides = {
     "참고 임상시험과 검토 완료 문헌에서 확인된 평가변수를 기준으로, 개발전략에 사용할 기존 치료성과 지표를 선택합니다.",
   strategy:
     "유사 임상과 문헌 근거를 바탕으로 대상 환자군, 시험설계 및 평가변수를 검토합니다.",
+  sampleSize:
+    "임상시험 설계에 필요한 통계적 가정을 입력하여 목표 검정력에 필요한 대상자 수를 산출합니다.",
   feasibility:
     "검토된 임상설계를 기준으로 예상 일정, 비용 및 수행 난이도를 검토합니다.",
   report:
@@ -184,6 +187,11 @@ export const workflowSteps = [
     href: (id: string) => `/assessments/${id}/development-strategy`,
   },
   {
+    id: "sample_size",
+    label: "표본수 산출",
+    href: (id: string) => `/assessments/${id}/sample-size`,
+  },
+  {
     id: "feasibility",
     label: "일정·비용·난이도",
     href: (id: string) => `/assessments/${id}/feasibility`,
@@ -202,6 +210,7 @@ export function workflowStepFromPath(pathname: string): WorkflowStepId {
   if (pathname.includes("/evidence")) return "evidence";
   if (pathname.includes("/benchmark")) return "benchmark";
   if (pathname.includes("/development-strategy")) return "strategy";
+  if (pathname.includes("/sample-size")) return "sample_size";
   if (pathname.includes("/feasibility")) return "feasibility";
   if (pathname.includes("/report")) return "report";
   return "register";
@@ -293,7 +302,7 @@ export const strategyBasisCopy = {
   benchmarkSelected:
     "담당자가 선택한 기존 치료성과만 사용합니다. 평가시점과 환자군이 다른 결과는 합치지 않습니다.",
   sampleSize:
-    "통계 산출 엔진이 연결되기 전에는 예상 대상자 수를 계산하지 않습니다.",
+    "예상 대상자 수는 [표본수 산출]에서 통계 가정에 따라 계산합니다. 이 화면에서는 자동 확정하지 않습니다.",
   keyAssumptionsValue:
     "대상 환자군, 치료차수, 평가변수 정의, 목표 치료효과, 대조군을 확정한 뒤 통계 설계를 진행해야 합니다.",
   keyAssumptionsBasis:

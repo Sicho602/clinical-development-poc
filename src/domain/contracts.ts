@@ -8,6 +8,9 @@ import type {
   HistoricalBenchmark,
   Publication,
   ReferenceTrial,
+  SampleSizeInput,
+  SampleSizeResult,
+  SampleSizeScenario,
   SearchLog,
   SearchStrategy,
   SelectedPublication,
@@ -118,6 +121,18 @@ export interface EvidenceExtractionService {
 export interface StatisticalEngine {
   readonly status: "not_connected" | "ready";
   calculate(input: unknown): Promise<unknown>;
+}
+
+export interface SampleSizeCalculator {
+  readonly status: "ready";
+  calculate(input: SampleSizeInput): SampleSizeResult;
+}
+
+export interface SampleSizeRepository {
+  list(assessmentId: string): Promise<SampleSizeScenario[]>;
+  save(scenario: SampleSizeScenario): Promise<SampleSizeScenario>;
+  remove(assessmentId: string, calculationId: string): Promise<void>;
+  clear(assessmentId: string): Promise<void>;
 }
 
 export interface CostEngine {
