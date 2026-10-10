@@ -304,6 +304,187 @@ export interface ClinicalTrialAssessmentState {
   isReferenceTrial: boolean;
 }
 
+export type DesignExtractionMethod = "api" | "ai" | "manual";
+
+export type DesignFieldReviewStatus =
+  | "not_reviewed"
+  | "approved"
+  | "edited"
+  | "rejected"
+  | "re_review_required";
+
+export type DesignValueChangeKind = "none" | "formal" | "substantive";
+
+export type DesignAutomationStatus =
+  | "not_started"
+  | "processing"
+  | "completed"
+  | "review_required"
+  | "failed";
+
+export type DesignAiStatus = "not_executed" | "mock" | "completed" | "failed";
+
+export type DesignMissingReason =
+  | "not_reported"
+  | "not_in_api"
+  | "requires_ai"
+  | "requires_manual_review";
+
+export type ClinicalDesignDomain =
+  | "population"
+  | "eligibility"
+  | "treatment"
+  | "endpoint"
+  | "timepoint"
+  | "sample_size"
+  | "study_duration"
+  | "enrollment"
+  | "statistical"
+  | "results";
+
+export type ClinicalDesignFieldKey =
+  | "nct_id"
+  | "study_title"
+  | "sponsor"
+  | "phase"
+  | "study_status"
+  | "study_type"
+  | "study_start_date"
+  | "primary_completion_date"
+  | "study_completion_date"
+  | "countries"
+  | "number_of_sites"
+  | "planned_sample_size"
+  | "actual_enrollment"
+  | "enrollment_type"
+  | "randomization"
+  | "allocation_ratio"
+  | "masking"
+  | "intervention_model"
+  | "number_of_arms"
+  | "treatment_duration"
+  | "follow_up_duration"
+  | "indication"
+  | "disease_severity"
+  | "age"
+  | "sex"
+  | "key_inclusion_criteria"
+  | "key_exclusion_criteria"
+  | "prior_treatment_requirements"
+  | "treatment_line"
+  | "washout_requirements"
+  | "investigational_treatment"
+  | "dose"
+  | "route"
+  | "dosing_frequency"
+  | "comparator_type"
+  | "comparator_treatment"
+  | "background_therapy"
+  | "rescue_medication"
+  | "primary_endpoint"
+  | "secondary_endpoints"
+  | "endpoint_definition"
+  | "assessment_timepoint"
+  | "endpoint_type"
+  | "statistical_hypothesis"
+  | "alpha"
+  | "power"
+  | "effect_size_assumption"
+  | "analysis_population"
+  | "arm_level_results"
+  | "adverse_events";
+
+export type DesignFieldValue = string | number | string[] | null;
+
+export interface DesignFieldSource {
+  nctId: string;
+  apiField: string;
+  url: string;
+}
+
+export interface SourcedDesignField {
+  key: ClinicalDesignFieldKey;
+  value: DesignFieldValue;
+  source: DesignFieldSource | null;
+  sourceText?: string;
+  extractionMethod: DesignExtractionMethod;
+  reviewStatus: DesignFieldReviewStatus;
+  reviewedValue?: DesignFieldValue;
+  reviewNote?: string;
+  reviewedBy?: string;
+  reviewedAt?: ISODateTime;
+  missingReason?: DesignMissingReason;
+  sourceChangedAfterReview?: boolean;
+  previousApiValue?: DesignFieldValue;
+  valueChangeKind?: DesignValueChangeKind;
+  reviewStatusBeforeSourceChange?: Exclude<
+    DesignFieldReviewStatus,
+    "not_reviewed" | "re_review_required"
+  >;
+}
+
+export interface ClinicalDesignArm {
+  label: string;
+  type?: string;
+  description?: string;
+  interventions: string[];
+}
+
+export interface ClinicalDesignEndpoint {
+  kind: "primary" | "secondary";
+  measure: string;
+  definition?: string;
+  timeFrame?: string;
+}
+
+export interface ClinicalDesignResultRow {
+  measure: string;
+  timeFrame?: string;
+  group?: string;
+  value?: string;
+  unit?: string;
+  spread?: string;
+}
+
+export interface ClinicalDesignProfile {
+  nctId: string;
+  extractedAt: ISODateTime;
+  fields: SourcedDesignField[];
+  arms: ClinicalDesignArm[];
+  endpoints: ClinicalDesignEndpoint[];
+  resultRows: ClinicalDesignResultRow[];
+  resultsAvailable: boolean;
+  extractionStatus: DesignAutomationStatus;
+  errorMessage?: string;
+}
+
+export interface ClinicalDesignComparisonRow {
+  domain: ClinicalDesignDomain;
+  fieldKey: ClinicalDesignFieldKey;
+  label: string;
+  valuesByNct: Record<string, SourcedDesignField>;
+  differenceKind: "same" | "different" | "partially_missing" | "all_missing";
+  programmaticNote: string;
+  aiComparison?: string;
+  clinicalImplication?: string;
+  evidenceSources: string[];
+  reviewStatus: DesignFieldReviewStatus | "mixed";
+}
+
+export interface ClinicalDesignComparison {
+  assessmentId: EntityId;
+  nctIds: string[];
+  profiles: ClinicalDesignProfile[];
+  rows: ClinicalDesignComparisonRow[];
+  jobStatus: DesignAutomationStatus;
+  aiStatus: DesignAiStatus;
+  aiProvider?: string;
+  aiModel?: string;
+  aiPromptVersion?: string;
+  extractedAt: ISODateTime;
+  updatedAt: ISODateTime;
+}
+
 export type EvidenceCategory =
   | "disease_landscape"
   | "historical_benchmark"

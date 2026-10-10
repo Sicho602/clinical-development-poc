@@ -5,13 +5,6 @@ import type {
 import { recordHasMojibake } from "@/lib/encoding";
 import { LocalStorageAssessmentRepository } from "@/repositories/browser/assessment-repository";
 import { LocalStorageDevelopmentStrategyRepository } from "@/repositories/browser/development-strategy-repository";
-import { LocalStorageEvidenceExtractionRepository } from "@/repositories/browser/evidence-extraction-repository";
-import { LocalStorageExtractionValidationRepository } from "@/repositories/browser/extraction-validation-repository";
-import { LocalStorageHistoricalBenchmarkRepository } from "@/repositories/browser/historical-benchmark-repository";
-import { LocalStoragePublicationSelectionRepository } from "@/repositories/browser/publication-selection-repository";
-import { LocalStorageReferenceTrialRepository } from "@/repositories/browser/reference-trial-repository";
-import { LocalStorageSampleSizeRepository } from "@/repositories/browser/sample-size-repository";
-import { LocalStorageSearchLogRepository } from "@/repositories/browser/search-log-repository";
 
 export const DEMO_ASSESSMENT_ID = "ASSESS-2026-001";
 
@@ -119,12 +112,10 @@ export async function ensureDemoAssessment() {
   const repository = new LocalStorageAssessmentRepository();
   const existing = await repository.getById(DEMO_ASSESSMENT_ID);
   const profile = window.localStorage.getItem(DEMO_PROFILE_KEY);
-  const resetLinked = profile !== DEMO_PROFILE_VERSION;
-  if (resetLinked) {
-    await clearDemoLinkedData();
+  if (profile !== DEMO_PROFILE_VERSION) {
     window.localStorage.setItem(DEMO_PROFILE_KEY, DEMO_PROFILE_VERSION);
   }
-  const demo = buildDemoAssessment(existing, { resetLinked });
+  const demo = buildDemoAssessment(existing, { resetLinked: false });
   await resetDemoStrategyCopy();
   return repository.update(demo);
 }
@@ -138,17 +129,4 @@ export async function resetDemoStrategyCopy() {
     await strategyRepository.clear(DEMO_ASSESSMENT_ID);
     window.localStorage.setItem(STRATEGY_COPY_KEY, STRATEGY_COPY_VERSION);
   }
-}
-
-async function clearDemoLinkedData() {
-  await Promise.all([
-    new LocalStorageReferenceTrialRepository().clear(DEMO_ASSESSMENT_ID),
-    new LocalStoragePublicationSelectionRepository().clear(DEMO_ASSESSMENT_ID),
-    new LocalStorageSearchLogRepository().clear(DEMO_ASSESSMENT_ID),
-    new LocalStorageEvidenceExtractionRepository().clear(DEMO_ASSESSMENT_ID),
-    new LocalStorageExtractionValidationRepository().clear(DEMO_ASSESSMENT_ID),
-    new LocalStorageHistoricalBenchmarkRepository().clear(DEMO_ASSESSMENT_ID),
-    new LocalStorageDevelopmentStrategyRepository().clear(DEMO_ASSESSMENT_ID),
-    new LocalStorageSampleSizeRepository().clear(DEMO_ASSESSMENT_ID),
-  ]);
 }

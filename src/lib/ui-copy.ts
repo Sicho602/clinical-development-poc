@@ -32,7 +32,7 @@ export const pageGuides = {
   overview:
     "검토 대상과 현재 진행단계를 확인하고, 다음 작업으로 이동합니다.",
   landscape:
-    "ClinicalTrials.gov에서 유사 임상시험을 검색하고, 개발전략 수립에 참고할 임상시험을 선택합니다.",
+    "ClinicalTrials.gov에서 유사 임상시험을 검색하고, 개발전략 수립에 참고할 임상시험을 선택한 뒤 임상 디자인을 자동 수집·비교합니다.",
   evidence:
     "PubMed에서 관련 문헌을 검색하고, 검토에 사용할 주요 문헌을 선택합니다.",
   review:

@@ -91,6 +91,11 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
   }
 
   async getByNctId(nctId: string): Promise<ClinicalTrial | null> {
+    const rawStudy = await this.getRawStudy(nctId);
+    return rawStudy ? mapClinicalTrial(rawStudy) : null;
+  }
+
+  async getRawStudy(nctId: string): Promise<unknown | null> {
     const normalizedNctId = nctId.trim().toUpperCase();
 
     if (!/^NCT\d{8}$/.test(normalizedNctId)) {
@@ -108,7 +113,7 @@ export class ClinicalTrialsClient implements ClinicalTrialsConnector {
 
     try {
       const response = await this.request(url);
-      return mapClinicalTrial(await readJsonBody(response));
+      return readJsonBody(response);
     } catch (error) {
       if (isConnectorError(error) && error.code === "not_found") {
         return null;

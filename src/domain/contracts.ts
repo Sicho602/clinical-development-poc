@@ -1,6 +1,7 @@
 import type {
   Assessment,
   AssessmentVersion,
+  ClinicalDesignComparison,
   ClinicalTrial,
   ClinicalTrialsServerSearchStrategy,
   DevelopmentStrategy,
@@ -100,6 +101,14 @@ export interface ClinicalTrialsConnector {
     input: ClinicalTrialsSearchInput,
   ): Promise<PageResult<ClinicalTrial>>;
   getByNctId(nctId: string): Promise<ClinicalTrial | null>;
+}
+
+export interface ClinicalDesignRepository {
+  getByAssessmentId(
+    assessmentId: string,
+  ): Promise<ClinicalDesignComparison | null>;
+  save(record: ClinicalDesignComparison): Promise<ClinicalDesignComparison>;
+  clear(assessmentId: string): Promise<void>;
 }
 
 export interface PubMedSearchInput extends PageRequest {

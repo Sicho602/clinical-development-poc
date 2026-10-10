@@ -36,6 +36,7 @@ import {
   LocalStorageReferenceTrialRepository,
   type SavedReferenceTrial,
 } from "@/repositories/browser/reference-trial-repository";
+import { ClinicalDesignWorkspace } from "@/features/clinical-design/clinical-design-workspace";
 import { LocalStorageSearchLogRepository } from "@/repositories/browser/search-log-repository";
 
 interface SearchResponse {
@@ -422,6 +423,11 @@ export function ClinicalTrialsWorkspace({
       <SelectedReferenceTrials
         onOpen={openTrial}
         onRemove={toggleReference}
+        references={references}
+      />
+
+      <ClinicalDesignWorkspace
+        assessmentId={assessmentId}
         references={references}
       />
 
